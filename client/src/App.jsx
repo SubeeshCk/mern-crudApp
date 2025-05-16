@@ -4,10 +4,12 @@ import About from "../src/pages/About"
 import SignIn from "../src/pages/SignIn"
 import SignUp from "../src/pages/SignUp"
 import Profile from "../src/pages/Profile"
+import Header from "./components/Header"
 
 const App = () => {
   return (
       <BrowserRouter>
+          <Header/>
           <Routes>
              <Route path="/" element = {<Home/>}></Route>
              <Route path="/about" element = {<About/>}></Route>
