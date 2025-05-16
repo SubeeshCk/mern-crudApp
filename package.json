@@ -1,0 +1,18 @@
+{
+  "name": "user-management",
+  "version": "1.0.0",
+  "description": "Crud application using react js in front end with redux,tailwind css where express js in back end with jwt authentication and authorization .",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev"  : "nodemon api/index.js",
+    "start": "node api/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0",
+    "nodemon": "^3.1.10"
+  }
+}
