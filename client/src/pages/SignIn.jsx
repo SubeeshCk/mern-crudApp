@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { signInStart, signInSuccess, signInFailure } from "../redux/user/userSlice";
-import { useDispatch,useSelector } from "react-redux";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from "../redux/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const SignIn = () => {
   const [formData, setFormData] = useState({});
@@ -25,12 +29,12 @@ const SignIn = () => {
         body: JSON.stringify(formData),
       });
       const data = await res.json();
-      if( data.success === false ){
+      if (data.success === false) {
         dispatch(signInFailure(data));
         return;
       }
       dispatch(signInSuccess(data));
-      navigate('/');
+      navigate("/");
     } catch (error) {
       dispatch(signInFailure(error));
     }
@@ -54,8 +58,11 @@ const SignIn = () => {
           className="bg-slate-100 p-3 rounded-lg"
           onChange={handleChange}
         />
-        <button disabled={loading} className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80">
-          { loading ? 'Loading..' : 'Sign In'}
+        <button
+          disabled={loading}
+          className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
+        >
+          {loading ? "Loading.." : "Sign In"}
         </button>
       </form>
       <div className="flex gap-2 mt-5">
@@ -64,7 +71,9 @@ const SignIn = () => {
           <span className="text-blue-500">Sign Up</span>
         </Link>
       </div>
-      <p className="text-red-600 mt-5">{ error ? error.message || 'Something went wrong' : ''}</p>
+      <p className="text-red-600 mt-5">
+        {error ? error.message || "Something went wrong" : ""}
+      </p>
     </div>
   );
 };
