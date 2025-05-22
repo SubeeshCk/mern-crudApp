@@ -57,7 +57,7 @@ function AdminNavbar() {
         
         {/* Dropdown Menu */}
         <div className="absolute right-0 mt-2 w-44 bg-white text-gray-800 rounded-md shadow-lg opacity-0 group-hover:opacity-100 transform scale-95 group-hover:scale-100 transition duration-200">
-          <button onClick={handleAdminLogout} className="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2">
+          <button onClick={handleAdminLogout} className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2">
             <FaSignOutAlt className="text-lg" />
             Logout
           </button>
