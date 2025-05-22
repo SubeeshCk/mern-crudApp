@@ -5,6 +5,7 @@ import SignIn from "../src/pages/SignIn";
 import SignUp from "../src/pages/SignUp";
 import Profile from "../src/pages/Profile";
 import Header from "./components/Header";
+import AdminLogin from "./pages/admin-pages/AdminLogin";
 import PrivateRoute from "./components/PrivateRoute";
 
 const App = () => {
@@ -19,6 +20,7 @@ const App = () => {
         <Route element={<PrivateRoute />}>
           <Route path="/profile" element={<Profile />} />
         </Route>
+        <Route path="/adminLogin" element={<AdminLogin />} />
       </Routes>
     </BrowserRouter>
   );
