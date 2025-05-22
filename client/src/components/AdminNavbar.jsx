@@ -8,6 +8,19 @@ import { adminLogout } from "../redux/user/adminSlice";
 function AdminNavbar() {
   const dispatch = useDispatch()
 
+  const handleAdminLogout = async (e)=>{
+    e.preventDefault()
+    try {
+      const res = await axios.get('/backend/admin/logout')
+      if(res.status === 200){
+        toast.success('LogOut Success')
+        dispatch(adminLogout())
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to logout")
+    }
+  }
 
   return (
     <nav className="bg-gray-900 sticky top-0 z-50 text-white py-4 px-6 shadow-md flex items-center">
@@ -44,7 +57,7 @@ function AdminNavbar() {
         
         {/* Dropdown Menu */}
         <div className="absolute right-0 mt-2 w-44 bg-white text-gray-800 rounded-md shadow-lg opacity-0 group-hover:opacity-100 transform scale-95 group-hover:scale-100 transition duration-200">
-          <button className="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2">
+          <button onClick={handleAdminLogout} className="block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2">
             <FaSignOutAlt className="text-lg" />
             Logout
           </button>
