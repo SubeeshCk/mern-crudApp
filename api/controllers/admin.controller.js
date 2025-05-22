@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { Admin } from "../models/admin.model.js"; 
 import { errorHandler } from "../utils/error.js";
-import { User } from "../models/user.model.js";
+import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 
 export const adminLogin = async (req, res, next) => {
@@ -60,11 +60,11 @@ export const getUsers = async (req, res, next) => {
 export const adminUpdatingUser = async (req, res) => {
     try {
         const { userId } = req.params;
-        const { userName, email } = req.body;
+        const { username, email } = req.body;
         
         const updateUser = await User.findByIdAndUpdate(
             userId,
-            {userName, email},
+            {username, email},
             {new : true}
         )
         
@@ -95,7 +95,7 @@ export const adminDeleteUser = async (req, res, next) => {
 
 export const adminAddUser = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { username, email, password } = req.body; // Changed from 'name' to 'username'
 
         // Check if email already exists
         const existingUser = await User.findOne({ email });
@@ -109,16 +109,16 @@ export const adminAddUser = async (req, res) => {
 
         // Create new user
         const newUser = new User({
-            userName: name,
+            username: username, // Use username instead of name
             email,
-            password: hashedPassword, // Store hashed password
+            password: hashedPassword,
         });
 
         await newUser.save();
 
         return res.status(201).json({
             message: "New user added successfully",
-            user: { id: newUser._id, name: newUser.userName, email: newUser.email } // Do not send password
+            user: { id: newUser._id, name: newUser.username, email: newUser.email }
         });
 
     } catch (error) {

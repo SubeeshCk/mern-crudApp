@@ -1,22 +1,32 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import userReducer from "./user/userSlice";
-import { persistReducer, persistStore } from "redux-persist";
-import storage from "redux-persist/lib/storage";
-
-const rootReducer = combineReducers({ user: userReducer });
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import userReducer from './user/userSlice.js';
+import adminReducer from './user/adminSlice.js'
+import storage from 'redux-persist/lib/storage';
+import { persistReducer, persistStore } from 'redux-persist';
 
 const persistConfig = {
-  key: "root",
+  key: 'root', 
   version: 1,
   storage,
 };
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+const persistedUserReducer = persistReducer(persistConfig, userReducer);
+const persistedAdminReduer = persistReducer(persistConfig, adminReducer)
+
+const rootReducer = combineReducers({ 
+  user: persistedUserReducer, 
+  admin:persistedAdminReduer
+});
+
+
 
 export const store = configureStore({
-  reducer:  persistedReducer ,
+  reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: false,
+      serializableCheck: {
+        ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'], 
+      },
     }),
 });
 

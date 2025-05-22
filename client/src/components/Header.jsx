@@ -1,32 +1,55 @@
-import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
-const Header = () => {
-  const { currentUser } = useSelector( (state) => state.user)
+function Navbar() {
+  const { currentUser } = useSelector((state) => state.user);
+
   return (
-    <div className='bg-slate-200'>
-      <div className='flex justify-between items-center max-w-6xl mx-auto p-3'>
-        <Link to='/'>
-            <h1 className='font-bold'>Crud App</h1>
+    <nav className="bg-slate-900 sticky top-0 z-50 text-white shadow-md">
+      <div className="flex justify-between items-center max-w-6xl mx-auto py-4 px-6">
+        {/* Logo */}
+        <Link to="/" className="text-2xl font-bold tracking-wide">
+          Redux<span className="text-red-500">Crud</span>
         </Link>
-        <ul className='flex gap-4'>
-            <Link to='/'>
-            <li>Home</li>
+
+        {/* Navigation Links */}
+        <ul className="flex items-center gap-6 text-lg">
+          <li>
+            <Link to="/" className="hover:text-red-400 transition duration-300">
+              Home
             </Link>
-            <Link to='/about'>
-            <li>About</li>
+          </li>
+          <li>
+            <Link to="/about" className="hover:text-red-400 transition duration-300">
+              About
             </Link>
-            <Link to='/profile'> 
+          </li>
+
+          {/* Profile Section */}
+          <li>
             {currentUser ? (
-              <img src={currentUser.profilePicture} alt='profile' className='h-7 w-7 rounded-full object-cover' />
-            ) : 
-              <li>Sign In</li>
-            }
-            </Link>
+              <Link to="/profile" className="flex items-center gap-3">
+                <img
+                  src={currentUser.profilePicture}
+                  alt="Profile"
+                  className="w-10 h-10 rounded-full border-2 border-red-500"
+                />
+                <span className="hidden sm:inline-block font-medium">{currentUser.username}</span>
+              </Link>
+            ) : (
+              <Link
+                to="/sign-in"
+                className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg text-white transition duration-300"
+              >
+                Sign In
+              </Link>
+            )}
+          </li>
         </ul>
       </div>
-    </div>
-  )
+    </nav>
+  );
 }
 
-export default Header
+export default Navbar;

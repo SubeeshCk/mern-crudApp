@@ -7,6 +7,7 @@ import {
 } from "../../redux/user/adminSlice.js";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function AdminLogin() {
   const [formData, setFormData] = useState({});
@@ -46,7 +47,7 @@ function AdminLogin() {
   };
 
   return (
-    <div className="p-3 max-w-lg mx-auto">
+    <div className="mt-20 p-3 max-w-lg mx-auto">
       <h1 className="text-3xl text-center font-semibold my-7">Log In</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
@@ -67,6 +68,12 @@ function AdminLogin() {
           Login
         </button>
       </form>
+        <div className="flex gap-2 mt-5">
+        <p>User?</p>
+        <Link to="/sign-in">
+          <span className="text-blue-500">Log in</span>
+        </Link>
+      </div>
     </div>
   );
 }
