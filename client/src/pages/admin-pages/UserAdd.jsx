@@ -119,7 +119,7 @@ function UserAdd() {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"} text-white font-semibold py-2 rounded-lg transition duration-200`}
+            className={`w-full ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-slate-700 hover:bg-slate-600"} text-white font-semibold py-2 rounded-lg transition duration-200`}
           >
             {loading ? "Adding..." : "Add User"}
           </button>
