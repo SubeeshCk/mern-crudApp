@@ -22,7 +22,9 @@ function Home() {
 
         {/* Benefits Section */}
         <div className="mt-6 text-left">
-          <h2 className="text-2xl font-semibold text-gray-800">Why use Redux?</h2>
+          <h2 className="text-2xl font-semibold text-gray-800">
+            Why use Redux?
+          </h2>
           <ul className="list-disc list-inside text-gray-700 mt-2">
             <li>✅ Centralized state management</li>
             <li>✅ Predictable state updates</li>

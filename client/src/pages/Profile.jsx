@@ -1,5 +1,7 @@
 import { useSelector } from "react-redux";
 import { useRef, useState, useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   getStorage,
   ref,
@@ -15,7 +17,7 @@ import {
   deleteUserStart,
   deleteUserSuccess,
   deleteUserFailure,
-  signOut
+  signOut,
 } from "../redux/user/userSlice.js";
 
 const Profile = () => {
@@ -52,6 +54,7 @@ const Profile = () => {
       (error) => {
         setImageError(true);
         console.error("Upload error:", error);
+        toast.error("Failed to upload image. Please try again.");
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
@@ -59,6 +62,7 @@ const Profile = () => {
             ...prev,
             profilePicture: downloadURL,
           }));
+          toast.success("Image uploaded successfully!");
         });
       }
     );
@@ -70,6 +74,13 @@ const Profile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Check if there's actually something to update
+    if (Object.keys(formData).length === 0) {
+      toast.info("No changes to update.");
+      return;
+    }
+
     try {
       dispatch(updateUserStart());
       const res = await fetch(`/api/user/update/${currentUser._id}`, {
@@ -79,43 +90,77 @@ const Profile = () => {
         },
         body: JSON.stringify(formData),
       });
+      
       const data = await res.json();
-      if (data.success === false) {
+      
+      if (!res.ok || data.success === false) {
         dispatch(updateUserFailure(data));
+        toast.error(data.message || "Failed to update profile.");
         return;
       }
+      
       dispatch(updateUserSuccess(data));
+      toast.success("Profile updated successfully!");
       setUpdateSuccess(true);
+      
+      // Reset form data after successful update
+      setFormData({});
+      
     } catch (error) {
-      dispatch(updateUserFailure(error));
+      console.error("Update error:", error);
+      dispatch(updateUserFailure(error.message || "Network error occurred"));
+      toast.error("Failed to update profile. Please check your connection.");
     }
   };
 
   const handleDeleteAccount = async () => {
-    dispatch(deleteUserStart());
+    // Add confirmation dialog
+    if (!window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+      return;
+    }
+
     try {
+      dispatch(deleteUserStart());
       const res = await fetch(`/api/user/delete/${currentUser._id}`, {
         method: "DELETE",
       });
+      
       const data = await res.json();
-      if( data.success === false ){
+      
+      if (!res.ok || data.success === false) {
         dispatch(deleteUserFailure(data));
+        toast.error(data.message || "Failed to delete account.");
         return;
       }
+      
       dispatch(deleteUserSuccess(data));
+      toast.success("Account deleted successfully!");
+      
     } catch (error) {
-      dispatch(deleteUserFailure(error));
+      console.error("Delete error:", error);
+      dispatch(deleteUserFailure(error.message || "Network error occurred"));
+      toast.error("Failed to delete account. Please try again.");
     }
   };
 
   const handleSignOut = async () => {
     try {
-      await fetch('/api/auth/sign-out');
+      const res = await fetch("/api/auth/sign-out", {
+        method: "POST",
+      });
+      
+      if (!res.ok) {
+        throw new Error("Failed to sign out");
+      }
+      
       dispatch(signOut());
+      toast.success("Signed out successfully!");
+      
     } catch (error) {
-      console.log(error);
+      console.error("Sign out error:", error);
+      toast.error("Failed to sign out. Please try again.");
     }
-  }
+  };
 
   return (
     <div className="p-3 max-w-lg mx-auto">
@@ -132,6 +177,7 @@ const Profile = () => {
               setImageError(true);
               setImage(undefined);
               setImagePercent(0);
+              toast.error("File size must be less than 2 MB");
             } else {
               setImageError(false);
               setImage(file);
@@ -151,7 +197,7 @@ const Profile = () => {
               Error uploading image (file size must be less than 2 MB)
             </span>
           ) : imagePercent > 0 && imagePercent < 100 ? (
-            <span className="text-slate-700">{`Uploading: ${imagePercent} %`}</span>
+            <span className="text-slate-700">{`Uploading: ${imagePercent}%`}</span>
           ) : imagePercent === 100 && !imageError ? (
             <span className="text-green-700">Image uploaded successfully</span>
           ) : (
@@ -162,7 +208,7 @@ const Profile = () => {
           defaultValue={currentUser.username}
           type="text"
           id="username"
-          placeholder="UserName"
+          placeholder="Username"
           className="bg-slate-100 rounded-lg p-3"
           onChange={handleChange}
         />
@@ -181,16 +227,42 @@ const Profile = () => {
           className="bg-slate-100 rounded-lg p-3"
           onChange={handleChange}
         />
-        <button className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80">
-          {loading ? 'Loading...' : 'Update' }
+        <button 
+          type="submit"
+          disabled={loading}
+          className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
+        >
+          {loading ? "Loading..." : "Update"}
         </button>
       </form>
       <div className="flex justify-between mt-5">
-        <span onClick={handleDeleteAccount} className="text-red-700 cursor-pointer ">Delete account</span>
-        <span onClick={handleSignOut} className="text-red-700 cursor-pointer ">Sign out</span>
+        <span
+          onClick={handleDeleteAccount}
+          className="text-red-700 cursor-pointer hover:underline"
+        >
+          Delete account
+        </span>
+        <span 
+          onClick={handleSignOut} 
+          className="text-red-700 cursor-pointer hover:underline"
+        >
+          Sign out
+        </span>
       </div>
-      <p className="text-red-700">{error&& 'Something went wrong!'}</p>
-      <p className="text-green-700">{updateSuccess&& 'User updated successfully!'}</p>
+      
+      {/* Move ToastContainer to the end and configure it properly */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 };

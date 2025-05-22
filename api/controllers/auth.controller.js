@@ -52,7 +52,7 @@ export const googleAuth = async (req, res, next) => {
     } else {
       const generatedPassword = Math.random().toString(36).slice(-8);
       const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
-      const randomNum = Math.floor(1000 + Math.random() * 9000);//to make username uniique
+      const randomNum = Math.floor(1000 + Math.random() * 9000); //to make username uniique
       const newUser = new User({
         username: `${req.body.name.split(" ")[0].toLowerCase()}${randomNum}`,
         email: req.body.email,
@@ -76,11 +76,10 @@ export const googleAuth = async (req, res, next) => {
   }
 };
 
-
 export const signOut = async (req, res, next) => {
   try {
-    res.clearCookie('access_token').status(200).json('Signout auccessfully!');
+    res.clearCookie("access_token").status(200).json("Signout auccessfully!");
   } catch (error) {
     next(error);
   }
-}
+};

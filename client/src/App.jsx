@@ -50,12 +50,12 @@ function AppRoutes() {
         </Route>
 
         <Route element={<AdminWithoutPrivate />}>
-           <Route path="/adminLogin" element={<AdminLogin />} />
+          <Route path="/adminLogin" element={<AdminLogin />} />
         </Route>
-        <Route element={<AdminPrivateRoute /> }>
+        <Route element={<AdminPrivateRoute />}>
           <Route path="/admin" element={<AdminHome />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/admin/user-add" element={<UserAdd />} />  
+          <Route path="/admin/user-add" element={<UserAdd />} />
         </Route>
       </Routes>
     </>

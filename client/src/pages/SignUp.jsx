@@ -1,80 +1,106 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import OAuth from "../components/OAuth";
+import React, { useState } from 'react';
+import { FcGoogle } from 'react-icons/fc';
+import { useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import OAuth from '../components/OAuth';
 
-const SignUp = () => {
+function SignUp() {
   const [formData, setFormData] = useState({});
-  const [error, setError] = useState(false);
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-
+  const navigate = useNavigate()
+  console.log(error);
+  
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setLoading(true);
+
     try {
-      setLoading(true);
-      const res = await fetch("/api/auth/sign-up", {
-        method: "POST",
+      const res = await fetch('/api/auth/sign-up', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
       });
+
       const data = await res.json();
       setLoading(false);
-      if( data.success === false ){
-        setError(true);
-        return;
+
+      if (!res.ok) {
+        throw new Error(data.message || 'Signup failed! ❌');
       }
+      toast.success('Account created successfully! 🎉', { autoClose: 3000 });
       navigate('/sign-in')
     } catch (error) {
+      setError(error.message);
+      toast.error(error.message || 'Signup failed! ❌', { autoClose: 3000 });
       setLoading(false);
-      setError(true);
     }
   };
 
   return (
-    <div className="p-3 max-w-lg mx-auto">
-      <h1 className="text-3xl text-center font-semibold my-7">Sign Up</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <input
-          type="text"
-          placeholder="Username"
-          id="username"
-          className="bg-slate-100 p-3 rounded-lg"
-          onChange={handleChange}
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          id="email"
-          className="bg-slate-100 p-3 rounded-lg"
-          onChange={handleChange}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          id="password"
-          className="bg-slate-100 p-3 rounded-lg"
-          onChange={handleChange}
-        />
-        <button disabled={loading} className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80">
-          { loading ? 'Loading..' : 'Sign Up'}
-        </button>
-        <OAuth/>
-      </form>
-      <div className="flex gap-2 mt-5">
-        <p>Have an account?</p>
-        <Link to="/sign-in">
-          <span className="text-blue-500">Sign In</span>
-        </Link>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="p-6 w-full max-w-sm bg-white border border-gray-300 rounded-lg shadow-md">
+        <h1 className="text-2xl font-semibold text-center mb-4">Sign Up</h1>
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+          <input
+            type="text"
+            placeholder="Username"
+            id="username"
+            className="border p-2 rounded-md focus:outline-blue-500"
+            required
+            onChange={handleChange}
+          />
+
+          <input
+            type="email"
+            placeholder="Email"
+            id="email"
+            className="border p-2 rounded-md focus:outline-blue-500"
+            required
+            onChange={handleChange}
+          />
+
+          <input
+            type="password"
+            placeholder="Password"
+            id="password"
+            className="border p-2 rounded-md focus:outline-blue-500"
+            required
+            onChange={handleChange}
+          />
+
+          <button
+            disabled={loading}
+            type="submit"
+            className={`py-2 rounded-md font-medium text-white transition ${
+              loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'
+            }`}
+          >
+            {loading ? 'Loading...' : 'Sign Up'}
+          </button>
+        </form>
+
+        <div className="my-3 text-center text-gray-500">or</div>
+
+        <OAuth />
+
+        <p className="text-center text-sm mt-3">
+          Already have an account?
+          <a href="/sign-in" className="text-blue-500 hover:underline ml-1">Sign In</a>
+        </p>
       </div>
-      <p className="text-red-600 mt-5">{ error && 'Something went wrong'}</p>
+      <ToastContainer />
     </div>
   );
-};
+}
 
 export default SignUp;
