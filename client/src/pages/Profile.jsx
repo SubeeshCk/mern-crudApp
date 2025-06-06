@@ -38,35 +38,44 @@ const Profile = () => {
     }
   }, [image]);
 
-  const handleFileUpload = async (image) => {
-    const storage = getStorage(app);
-    const fileName = new Date().getTime() + image.name;
-    const storageRef = ref(storage, fileName);
-    const uploadTask = uploadBytesResumable(storageRef, image);
+const handleFileUpload = async (image) => {
+  const allowedTypes = ["image/jpeg", "image/jpg"];
+  
+  if (!allowedTypes.includes(image.type)) {
+    setImageError(true);
+    toast.error("Only JPG or JPEG image formats are allowed.");
+    return;
+  }
 
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        const progress =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        setImagePercent(Math.round(progress));
-      },
-      (error) => {
-        setImageError(true);
-        console.error("Upload error:", error);
-        toast.error("Failed to upload image. Please try again.");
-      },
-      () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          setFormData((prev) => ({
-            ...prev,
-            profilePicture: downloadURL,
-          }));
-          toast.success("Image uploaded successfully!");
-        });
-      }
-    );
-  };
+  const storage = getStorage(app);
+  const fileName = new Date().getTime() + image.name;
+  const storageRef = ref(storage, fileName);
+  const uploadTask = uploadBytesResumable(storageRef, image);
+
+  uploadTask.on(
+    "state_changed",
+    (snapshot) => {
+      const progress =
+        (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      setImagePercent(Math.round(progress));
+    },
+    (error) => {
+      setImageError(true);
+      console.error("Upload error:", error);
+      toast.error("Failed to upload image. Please try again.");
+    },
+    () => {
+      getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+        setFormData((prev) => ({
+          ...prev,
+          profilePicture: downloadURL,
+        }));
+        toast.success("Image uploaded successfully!");
+      });
+    }
+  );
+};
+
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });

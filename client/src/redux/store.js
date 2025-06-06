@@ -11,11 +11,11 @@ const persistConfig = {
 };
 
 const persistedUserReducer = persistReducer(persistConfig, userReducer);
-const persistedAdminReduer = persistReducer(persistConfig, adminReducer);
+const persistedAdminReducer = persistReducer(persistConfig, adminReducer);
 
 const rootReducer = combineReducers({
   user: persistedUserReducer,
-  admin: persistedAdminReduer,
+  admin: persistedAdminReducer,
 });
 
 export const store = configureStore({
